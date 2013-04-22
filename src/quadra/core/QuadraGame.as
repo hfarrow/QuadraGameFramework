@@ -1,19 +1,20 @@
 package quadra.core 
 {
-	import flash.ui.Keyboard;
-	import quadra.input.DirectionalKeyBinding;
+	import flash.utils.getTimer;
+	import nape.geom.Vec2;
+	import nape.space.Space;
+	import nape.util.Debug;
+	import nape.util.ShapeDebug;
 	import quadra.input.InputManager;
+	import starling.core.Starling;
 	import starling.display.Sprite;
 	import starling.events.EnterFrameEvent;
-	import starling.text.TextField;
 	import starling.events.Event;
 	
 	public class QuadraGame extends Sprite
 	{
 		public static var current:QuadraGame;
 		public static var inputManager:InputManager;
-		
-		public var binding:DirectionalKeyBinding;
 		
 		public function QuadraGame()
 		{
@@ -29,14 +30,24 @@ package quadra.core
 			
 			inputManager = new InputManager();
 		}
-		
-		public function onEnterFrame(e:EnterFrameEvent):void
-		{
 			
+		private function onEnterFrame(e:EnterFrameEvent):void
+		{
+			update(e.passedTime);
 			
 			// input manager must be updated after gameplay so that current and last keyboard states 
 			// are swapped at the end of the frame in preperation of the next frame.
 			inputManager.update(e.passedTime);
+		}
+			
+		protected function init():void
+		{
+			// override this function
+		}
+		
+		protected function update(elapsedTime:Number):void
+		{
+			// override this function
 		}
 	}
 }
