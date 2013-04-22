@@ -5,8 +5,6 @@ package quadra.scene.components
 	import quadra.scene.IEntityComponent;
 	import starling.display.DisplayObject;
 	
-	// Component Dependencies:
-	//	SpatialComponent: x, y, rotation
 	public class CameraComponent implements IEntityComponent
 	{
 		private var _entity:Entity;
@@ -22,8 +20,6 @@ package quadra.scene.components
 			_yOffset = yOffset;
 			_isRotationLocked = isRotationLocked;
 		}
-		
-		/* INTERFACE quadra.scene.IEntityComponent */
 		
 		public function init():void 
 		{
@@ -52,11 +48,11 @@ package quadra.scene.components
 		
 		public function update(elapsedTime:Number):void 
 		{			
-			_viewContainer.x = -(_entity.getAttribute("x") as Number) + _xOffset;
-			_viewContainer.y = -(_entity.getAttribute("y") as Number) + _yOffset;
+			_viewContainer.x = -_entity.x + _xOffset;
+			_viewContainer.y = -_entity.y + _yOffset;
 			if (!_isRotationLocked)
 			{
-				_viewContainer.rotation = -(_entity.getAttribute("rotation") as Number);
+				_viewContainer.rotation = -_entity.rotation;
 			}
 		}
 	}

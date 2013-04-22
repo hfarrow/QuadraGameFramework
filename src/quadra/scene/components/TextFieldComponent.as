@@ -16,15 +16,11 @@ package quadra.scene.components
 		{
 			textField = new TextField(width, height, text, font, fontSize, color, bold);
 		}
-		
-		/* INTERFACE quadra.scene.IDisplayComponent */
 			
 		public function get displayObject():DisplayObject 
 		{
 			return textField;
 		}
-		
-		/* INTERFACE quadra.scene.IEntityComponent */
 		
 		public function init():void 
 		{
@@ -38,7 +34,7 @@ package quadra.scene.components
 		
 		public function get type():Class 
 		{
-			return IDisplayComponent;
+			return TextFieldComponent;
 		}
 		
 		public function get entity():Entity 

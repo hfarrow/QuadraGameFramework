@@ -16,8 +16,6 @@ package quadra.scene.components
 			quad = new Quad(width, height, color);
 		}
 		
-		/* INTERFACE quadra.scene.IEntityComponent */
-		
 		public function init():void
 		{
 			
@@ -30,7 +28,7 @@ package quadra.scene.components
 		
 		public function get type():Class 
 		{
-			return IDisplayComponent;
+			return QuadComponent;
 		}
 		
 		public function get entity():Entity 
@@ -48,13 +46,9 @@ package quadra.scene.components
 			
 		}
 		
-		/* INTERFACE quadra.scene.components.IDisplayComponent */
-		
 		public function get displayObject():DisplayObject 
 		{
 			return quad;
-		}
-		
+		}		
 	}
-
 }

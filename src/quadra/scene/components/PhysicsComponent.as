@@ -5,8 +5,6 @@ package quadra.scene.components
 	import quadra.scene.IEntityComponent;
 	import nape.phys.Body;
 	
-	// Component Dependencies:
-	//	SpatialComponent: x, y, rotation
 	public class PhysicsComponent implements IEntityComponent
 	{
 		private var _entity:Entity;
@@ -16,8 +14,6 @@ package quadra.scene.components
 		{
 			_body = body;
 		}
-		
-		/* INTERFACE quadra.scene.IEntityComponent */
 		
 		public function init():void 
 		{
@@ -48,9 +44,9 @@ package quadra.scene.components
 		
 		public function update(elapsedTime:Number):void 
 		{
-			_entity.setAttribute("x", _body.position.x);
-			_entity.setAttribute("y", _body.position.y);
-			_entity.setAttribute("rotation", _body.rotation);
+			_entity.x = _body.position.x;
+			_entity.y = _body.position.y;
+			_entity.rotation = _body.rotation;
 		}
 	}
 }
