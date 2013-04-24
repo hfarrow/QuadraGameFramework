@@ -6,39 +6,40 @@ package quadra.core
 	import nape.util.Debug;
 	import nape.util.ShapeDebug;
 	import quadra.input.InputManager;
+	import quadra.scene.SceneManager;
 	import starling.core.Starling;
 	import starling.display.Sprite;
 	import starling.events.EnterFrameEvent;
 	import starling.events.Event;
 	
-	public class QuadraSample extends Sprite
+	public class QuadraSample extends QuadraGame
 	{
-		public static var current:QuadraSample;
-		public static var inputManager:InputManager;
+		public static var currentSample:QuadraSample;
 		public static var isDebuggingPhysics:Boolean = false;
 		public static var space:Space;
 		public static var physicsDebug:Debug;
+		public static var scene:SceneManager;
 		
 		private var _prevTimeMS:int;
         private var _simulationTime:Number;
 		
 		public function QuadraSample()
 		{
-			QuadraSample.current = this;
-			
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			QuadraSample.currentSample = this;
 		}
 		
-		private function onAddedToStage(e:Event):void 
+		protected override function onAddedToStage(e:Event):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			
 			inputManager = new InputManager();
 			initPhysics();
+			initScene();
+			init();
 		}
 		
-		protected function initPhysics():void
+		private function initPhysics():void
 		{
 			space = new Space(Vec2.weak(0, 300));
 			physicsDebug = new ShapeDebug(stage.stageWidth, stage.stageHeight, stage.color);
@@ -47,12 +48,18 @@ package quadra.core
 			// Set up fixed time step logic.
             _prevTimeMS = getTimer();
             _simulationTime = 0.0;
-		}	
+		}
 		
-		private function onEnterFrame(e:EnterFrameEvent):void
+		private function initScene():void
+		{
+			scene = new SceneManager(this);
+		}
+		
+		protected override function onEnterFrame(e:EnterFrameEvent):void
 		{
 			updatePhysics(e.passedTime);
 			updateDebugPhysics(e.passedTime);
+			updateScene(e.passedTime);
 			update(e.passedTime);
 			
 			// input manager must be updated after gameplay so that current and last keyboard states 
@@ -90,12 +97,17 @@ package quadra.core
 			}
 		}
 		
-		protected function init():void
+		private function updateScene(elapsedTime:Number):void
+		{
+			scene.update(elapsedTime);
+		}
+		
+		protected override function init():void
 		{
 			// override this function
 		}
 		
-		protected function update(elapsedTime:Number):void
+		protected override function update(elapsedTime:Number):void
 		{
 			// override this function
 		}

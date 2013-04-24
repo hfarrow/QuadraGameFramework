@@ -1,28 +1,26 @@
 package quadra.scene
 {
-	public class EntityAttribute
+	import org.osflash.signals.Signal;
+	public class BaseEntityAttribute
 	{
 		private var _name:String;
-		private var _value:Object;
 		private var _owner:IEntityComponent;
 		private var _isReadOnly:Boolean;
 		
-		public function EntityAttribute(name:String, value:Object, owner:IEntityComponent, isReadOnly:Boolean=false)
+		public var changed:Signal;
+		
+		public function BaseEntityAttribute(name:String, owner:IEntityComponent, isReadOnly:Boolean=false)
 		{
 			_name = name;
-			_value = value;
 			_owner = owner;
 			_isReadOnly = isReadOnly;
+			
+			changed = new Signal();
 		}
 		
 		public function get name():String
 		{
 			return _name;
-		}
-		
-		public function get value():Object
-		{
-			return _value;
 		}
 		
 		public function get owner():IEntityComponent 
@@ -33,11 +31,6 @@ package quadra.scene
 		public function get isReadOnly():Boolean 
 		{
 			return _isReadOnly;
-		}
-		
-		public function set value(v:Object):void
-		{
-			_value = v;
 		}
 	}
 }

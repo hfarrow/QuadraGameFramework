@@ -20,7 +20,7 @@
  *	THE SOFTWARE.
  */
  
-package quadra.graphics.filters
+package quadra.display.filters
 {
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;

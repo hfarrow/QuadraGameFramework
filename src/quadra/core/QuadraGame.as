@@ -23,7 +23,7 @@ package quadra.core
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
-		private function onAddedToStage(e:Event):void 
+		protected function onAddedToStage(e:Event):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -31,7 +31,7 @@ package quadra.core
 			inputManager = new InputManager();
 		}
 			
-		private function onEnterFrame(e:EnterFrameEvent):void
+		protected function onEnterFrame(e:EnterFrameEvent):void
 		{
 			update(e.passedTime);
 			
