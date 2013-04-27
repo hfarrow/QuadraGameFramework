@@ -1,7 +1,7 @@
 package quadra.scene.components
 {
 	import quadra.scene.Entity;
-	import quadra.scene.EntityAttribute;
+	import quadra.scene.EntityAttributeObject;
 	import quadra.scene.IEntityComponent;
 	import nape.phys.Body;
 	
@@ -17,7 +17,7 @@ package quadra.scene.components
 		
 		public function init():void 
 		{
-			_entity.createAttribute("physicsBody", _body, this);
+			_entity.createAttributeObject("physicsBody", _body, this);
 		}
 		
 		public function destroy():void 
