@@ -102,15 +102,25 @@ package quadra.display
 			_indexData.splice(0, _indexData.length);
 		}
 		
-		public function addVertices(vertexData:VertexData):void
+		public function addVertices(vertexData:VertexData, indices:Vector.<uint>=null):void
 		{
 			var nextIndex:int = _vertexData.numVertices;
 			_vertexData.numVertices += vertexData.numVertices;
 			vertexData.copyTo(_vertexData, nextIndex);
 			
-			for (var i:int = nextIndex; i < _vertexData.numVertices; ++i)
+			if (indices == null)
 			{
-				_indexData.push(nextIndex + i);
+				for (var i:int = nextIndex; i < _vertexData.numVertices; ++i)
+				{
+					_indexData.push(nextIndex + i);
+				}
+			}
+			else
+			{
+				for (var j:int = 0; j < indices.length; ++j)
+				{
+					_indexData.push(nextIndex + indices[j]);
+				}
 			}
 		}
 		

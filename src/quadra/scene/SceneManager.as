@@ -25,15 +25,18 @@ package quadra.scene
 			}
 			
 			_root.addChild(entity);
-			entity.init();			
+			entity.init();
+			_root.dispatchEventWith(SceneEvent.ENTITY_CREATED, false, entity);
 			return entity;
 		}
 		
 		public function destroyEntity(entity:Entity):void
 		{
+			_root.dispatchEventWith(SceneEvent.DESTROYING_ENTITY, false, entity);
 			_root.removeChild(entity);
 			entity.destroy();
 			entity.manager = null;
+			_root.dispatchEventWith(SceneEvent.ENTITY_DESTROYED, false, entity);
 		}
 		
 		public function update(elapsedTime:Number):void
