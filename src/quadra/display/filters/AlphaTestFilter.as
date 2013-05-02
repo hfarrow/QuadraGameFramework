@@ -12,7 +12,7 @@ package quadra.display.filters
  
 	public class AlphaTestFilter extends FragmentFilter
 	{
-		private var mVars:Vector.<Number> = new <Number>[.6,0,0,0]; // x is used as an alpha threshold for kil
+		private var mVars:Vector.<Number> = new <Number>[.8,0,0,0]; // x is used as an alpha threshold for kil
 		private var mColor:Vector.<Number> = new <Number>[0,0,1,0];
 		private var mShaderProgram:Program3D;
  

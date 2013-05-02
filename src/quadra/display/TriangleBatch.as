@@ -82,6 +82,7 @@ package quadra.display
             var vertexProgramCode:String =
                 "m44 op, va0, vc0 \n" + // 4x4 matrix transform to output space
                 "mul v0, va1, vc4 \n";  // multiply color with alpha and pass it to fragment shader
+				//"mov v0, va1 \n";  // multiply color with alpha and pass it to fragment shader
             
             var fragmentProgramCode:String =
                 "mov oc, v0";           // just forward incoming color
