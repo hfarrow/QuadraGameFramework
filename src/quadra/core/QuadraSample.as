@@ -6,19 +6,19 @@ package quadra.core
 	import nape.util.Debug;
 	import nape.util.ShapeDebug;
 	import quadra.input.InputManager;
-	import quadra.scene.SceneManager;
+	import quadra.world.EntityWorld;
 	import starling.core.Starling;
-	import starling.display.Sprite;
 	import starling.events.EnterFrameEvent;
 	import starling.events.Event;
 	
 	public class QuadraSample extends QuadraGame
 	{
+		
 		public static var currentSample:QuadraSample;
 		public static var isDebuggingPhysics:Boolean = false;
 		public static var space:Space;
 		public static var physicsDebug:Debug;
-		public static var scene:SceneManager;
+		public static var entityWorld:EntityWorld;
 		
 		private var _prevTimeMS:int;
         private var _simulationTime:Number;
@@ -35,7 +35,7 @@ package quadra.core
 			
 			inputManager = new InputManager();
 			initPhysics();
-			initScene();
+			initEntityWorld();
 			init();
 		}
 		
@@ -50,16 +50,16 @@ package quadra.core
             _simulationTime = 0.0;
 		}
 		
-		private function initScene():void
+		private function initEntityWorld():void
 		{
-			scene = new SceneManager(this);
+			entityWorld = new EntityWorld();
 		}
 		
 		protected override function onEnterFrame(e:EnterFrameEvent):void
 		{
 			updatePhysics(e.passedTime);
 			updateDebugPhysics(e.passedTime);
-			updateScene(e.passedTime);
+			entityWorld.update(e.passedTime);
 			update(e.passedTime);
 			
 			// input manager must be updated after gameplay so that current and last keyboard states 
@@ -95,11 +95,6 @@ package quadra.core
 				physicsDebug.draw(space);
 				physicsDebug.flush();
 			}
-		}
-		
-		private function updateScene(elapsedTime:Number):void
-		{
-			scene.update(elapsedTime);
 		}
 		
 		protected override function init():void
