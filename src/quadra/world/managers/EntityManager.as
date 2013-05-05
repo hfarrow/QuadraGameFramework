@@ -4,19 +4,19 @@ package quadra.world.managers
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	import quadra.core.EventManager;
-	import quadra.util.GUID;
+	import quadra.utils.GUID;
 	import quadra.world.ComponentType;
 	import quadra.world.Entity;
 	import quadra.world.EntityWorld;
 	import quadra.world.events.EntityEvent;
-	import quadra.world.IComponent;
+	import quadra.world.IEntityComponent;
 
 	public class EntityManager
 	{		
 		private var _world:EntityWorld;
 		private var _activeEntities:Dictionary;
 		private var _nextEntityId:int;
-		private var _entityComponents:Dictionary // entity : Vector.<IComponent>
+		private var _entityComponents:Dictionary // entity : Vector.<IEntityComponent>
 		
 		public function EntityManager(world:EntityWorld)
 		{
@@ -37,17 +37,27 @@ package quadra.world.managers
 			entity.id = _nextEntityId++;
 			_activeEntities[entity.id] = entity;
 			
-			EventManager.dispatchEvent(new EntityEvent(EntityEvent.CREATED, entity));
+			EventManager.dispatchEventWith(EntityEvent.CREATED, entity);
 			
 			return entity;
 		}
 		
-		public function addEntityComponent(entity:Entity, component:IComponent):void
+		public function removeEntity(entity:Entity):void
 		{
-			var components:Vector.<IComponent> = _entityComponents[entity] as Vector.<IComponent>
+			if (_activeEntities[entity.id] != null)
+			{
+				_activeEntities[entity.id] = null;
+				EventManager.dispatchEventWith(EntityEvent.REMOVED, entity);
+				entity.clear();
+			}
+		}
+		
+		public function addEntityComponent(entity:Entity, component:IEntityComponent):void
+		{
+			var components:Vector.<IEntityComponent> = _entityComponents[entity] as Vector.<IEntityComponent>
 			if (components == null)
 			{
-				components = new Vector.<IComponent>();
+				components = new Vector.<IEntityComponent>();
 				_entityComponents[entity] = components;
 			}
 			
@@ -55,42 +65,51 @@ package quadra.world.managers
 			var type:ComponentType = ComponentTypeManager.getTypeFor(componentClass);			
 			components.push(component);
 			
-			entity.addTypeBit(type.bit);
+			entity.typeBits.setBit(type.id);
 			
-			EventManager.dispatchEvent(new EntityEvent(EntityEvent.COMPONENT_ADDED, { entity:entity, component:component } ));
+			EventManager.dispatchEventWith(EntityEvent.COMPONENT_ADDED, { entity:entity, component:component });
 		}
 		
-		public function removeEntityComponent(entity:Entity, type:ComponentType):void
+		internal function removeEntityComponentByType(entity:Entity, type:ComponentType):void
 		{
-			var components:Vector.<IComponent> = _entityComponents[entity] as Vector.<IComponent>
+			removeEntityComponent(entity, ComponentTypeManager.getClassforType(type));
+		}
+		
+		public function removeEntityComponent(entity:Entity, typeClass:Class):void
+		{
+			var components:Vector.<IEntityComponent> = _entityComponents[entity] as Vector.<IEntityComponent>
 			if (components == null)
 			{
 				return;
 			}
 			
-			var removed:IComponent;
 			for (var i:int = 0; i < components.length; ++i)
 			{
-				var componentClass:Class = Class(getDefinitionByName(getQualifiedClassName(components[i])));
-				if (components[i] is componentClass)
+				if (components[i] is typeClass)
 				{
-					removed = components.splice(i, 1)[0];
-					break;
+					var type:ComponentType = ComponentTypeManager.getTypeFor(typeClass)
+					var removed:IEntityComponent = components.splice(i, 1)[0];
+					entity.typeBits.clearBit(type.id);
+					EventManager.dispatchEventWith(EntityEvent.COMPONENT_REMOVED, { entity:entity, component:removed });
+					return;
 				}
-			}
-			
-			if (removed == null)
+			}			
+		}
+		
+		public function removeAllEntityComponents(entity:Entity):void
+		{
+			var components:Vector.<IEntityComponent> = _entityComponents[entity] as Vector.<IEntityComponent>
+			if (components == null)
 			{
 				return;
 			}
 			
-			entity.removeTypeBit(type.bit);			
-			EventManager.dispatchEvent(new EntityEvent(EntityEvent.COMPONENT_REMOVED, { entity:entity, component:removed } ));
+			components.length = 0;
 		}
 		
 		public function refresh(entity:Entity):void
 		{
-			// TODO: notify systems of changed entity
+			EventManager.dispatchEventWith(EntityEvent.REFRESHED, entity);
 		}
 	}
 }

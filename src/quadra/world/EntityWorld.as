@@ -24,14 +24,19 @@ package quadra.world
 			return _systemManager;
 		}
 		
-		public function createEntity(uniqueId:String):Entity
+		public function createEntity(uniqueId:String=null):Entity
 		{
 			return _entityManager.createEntity(uniqueId);
 		}
 		
+		public function removeEntity(entity:Entity):void
+		{
+			_entityManager.removeEntity(entity);
+		}
+		
 		public function update(elapsedTime:Number):void
 		{
-			
+			_systemManager.update(elapsedTime);
 		}
 	}
 }

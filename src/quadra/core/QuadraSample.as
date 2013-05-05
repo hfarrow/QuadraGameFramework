@@ -18,7 +18,7 @@ package quadra.core
 		public static var isDebuggingPhysics:Boolean = false;
 		public static var space:Space;
 		public static var physicsDebug:Debug;
-		public static var entityWorld:EntityWorld;
+		public static var world:EntityWorld;
 		
 		private var _prevTimeMS:int;
         private var _simulationTime:Number;
@@ -52,14 +52,14 @@ package quadra.core
 		
 		private function initEntityWorld():void
 		{
-			entityWorld = new EntityWorld();
+			world = new EntityWorld();
 		}
 		
 		protected override function onEnterFrame(e:EnterFrameEvent):void
 		{
 			updatePhysics(e.passedTime);
 			updateDebugPhysics(e.passedTime);
-			entityWorld.update(e.passedTime);
+			world.update(e.passedTime);
 			update(e.passedTime);
 			
 			// input manager must be updated after gameplay so that current and last keyboard states 

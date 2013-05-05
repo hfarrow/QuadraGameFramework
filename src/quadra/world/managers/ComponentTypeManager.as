@@ -12,21 +12,34 @@ package quadra.world.managers
 			
 		}
 		
-		internal static function getTypeFor(componentType:Class):ComponentType
+		public static function getTypeFor(componentClass:Class):ComponentType
 		{
-			var type:ComponentType = _sTypeMap[componentType] as ComponentType;
+			var type:ComponentType = _sTypeMap[componentClass] as ComponentType;
 			if (type == null)
 			{
 				type = new ComponentType();
-				setTypeFor(componentType, type);
+				setTypeFor(componentClass, type);
 			}
 			
 			return type;
 		}
 		
-		internal static function setTypeFor(componentType:Class, type:ComponentType):void 
+		public static function setTypeFor(componentClass:Class, type:ComponentType):void 
 		{			
-			_sTypeMap[componentType] = type;
+			_sTypeMap[componentClass] = type;
+		}
+		
+		public static function getClassforType(type:ComponentType):Class
+		{
+			for each (var componentClass:ComponentType in _sTypeMap)
+			{
+				if (componentClass == type)
+				{
+					return _sTypeMap[type];
+				}
+			}
+			
+			return null;
 		}
 	}
 }

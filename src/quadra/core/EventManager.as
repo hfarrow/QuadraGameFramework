@@ -1,8 +1,7 @@
 package quadra.core
-{
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	
+{	
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
 	public class EventManager
 	{
 		private static var dispatcher:EventDispatcher = new EventDispatcher();
@@ -12,19 +11,24 @@ package quadra.core
 			throw new Error("EventManager is a Singleton");
 		}
 		
-		public static function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void
+		public static function addEventListener(type:String, listener:Function):void
 		{
-			dispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
+			dispatcher.addEventListener(type, listener);
 		}
 		
-		public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void
+		public static function removeEventListener(type:String, listener:Function):void
 		{
-			dispatcher.removeEventListener(type, listener, useCapture);
+			dispatcher.removeEventListener(type, listener);
 		}
 		
-		public static function dispatchEvent(event:Event):Boolean
+		public static function dispatchEvent(event:Event):void
 		{
-			return dispatcher.dispatchEvent(event);
+			dispatcher.dispatchEvent(event);
+		}
+		
+		public static function dispatchEventWith(type:String, data:Object = null, bubbles:Boolean = false):void
+		{
+			dispatcher.dispatchEventWith(type, bubbles, data);
 		}
 		
 		public static function hasEventListener(type:String):Boolean

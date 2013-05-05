@@ -1,6 +1,6 @@
 package quadra.world
 {
-	public class ComponentType
+	public class SystemType
 	{
 		private static var _sNextId:uint;
 		
@@ -11,7 +11,7 @@ package quadra.world
 		
 		private var _id:uint;
 		
-		public function ComponentType()
+		public function SystemType()
 		{
 			_id = getNextId();
 		}
