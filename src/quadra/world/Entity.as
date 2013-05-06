@@ -1,8 +1,9 @@
 package quadra.world 
 {
+	import quadra.core.EventManager;
 	import quadra.utils.BitField;
 	import quadra.world.managers.EntityManager;
-	public class Entity
+	public class Entity extends EventManager
 	{
 		private var _world:EntityWorld;
 		private var _entityManager:EntityManager;
@@ -74,14 +75,19 @@ package quadra.world
 			_entityManager.addEntityComponent(this, component);
 		}
 		
-		public function removeComponent(type:Class):void
+		public function removeComponent(componentClass:Class):void
 		{
-			_entityManager.removeEntityComponent(this, type);
+			_entityManager.removeEntityComponent(this, componentClass);
 		}
 		
 		public function removeAllComponents():void
 		{
 			_entityManager.removeAllEntityComponents(this);
+		}
+		
+		public function getComponent(componentClass:Class):IEntityComponent
+		{
+			return _entityManager.getEntityComponent(this, componentClass);
 		}
 		
 		public function refresh():void

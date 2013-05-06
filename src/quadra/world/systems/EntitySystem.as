@@ -27,7 +27,7 @@ package quadra.world.systems
 			var typeClass:Class = Class(getDefinitionByName(getQualifiedClassName(this)));
 			_type = SystemTypeManager.getTypeFor(typeClass).id;
 			
-			EventManager.addEventListener(EntityEvent.REFRESHED, onEntityRefreshed);
+			EventManager.global.addEventListener(EntityEvent.REFRESHED, onEntityRefreshed);
 		}	
 		
 		public function clear():void
@@ -105,6 +105,7 @@ package quadra.world.systems
 				_entityIndexMap[entity.id] = _entities.length;
 				_entities.push(entity);
 				entity.systemBits.setBit(_type);
+				onEntityAdded(entity);
 			}
 		}
 		
@@ -115,7 +116,18 @@ package quadra.world.systems
 				_entityIndexMap[entity.id] = null;
 				_entities.splice(_entityIndexMap[entity.id], 1); 
 				entity.systemBits.clearBit(_type);
+				onEntityRemoved(entity);
 			}
+		}
+		
+		protected function onEntityAdded(entity:Entity):void
+		{
+			// override this
+		}
+		
+		protected function onEntityRemoved(entity:Entity):void
+		{
+			// override this
 		}
 	}
 }

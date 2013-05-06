@@ -37,7 +37,7 @@ package quadra.world.managers
 			entity.id = _nextEntityId++;
 			_activeEntities[entity.id] = entity;
 			
-			EventManager.dispatchEventWith(EntityEvent.CREATED, entity);
+			EventManager.global.dispatchEventWith(EntityEvent.CREATED, entity);
 			
 			return entity;
 		}
@@ -47,7 +47,7 @@ package quadra.world.managers
 			if (_activeEntities[entity.id] != null)
 			{
 				_activeEntities[entity.id] = null;
-				EventManager.dispatchEventWith(EntityEvent.REMOVED, entity);
+				EventManager.global.dispatchEventWith(EntityEvent.REMOVED, entity);
 				entity.clear();
 			}
 		}
@@ -66,8 +66,9 @@ package quadra.world.managers
 			components.push(component);
 			
 			entity.typeBits.setBit(type.id);
+			component.init(entity);
 			
-			EventManager.dispatchEventWith(EntityEvent.COMPONENT_ADDED, { entity:entity, component:component });
+			EventManager.global.dispatchEventWith(EntityEvent.COMPONENT_ADDED, { entity:entity, component:component });
 		}
 		
 		internal function removeEntityComponentByType(entity:Entity, type:ComponentType):void
@@ -75,7 +76,7 @@ package quadra.world.managers
 			removeEntityComponent(entity, ComponentTypeManager.getClassforType(type));
 		}
 		
-		public function removeEntityComponent(entity:Entity, typeClass:Class):void
+		public function removeEntityComponent(entity:Entity, componentClass:Class):void
 		{
 			var components:Vector.<IEntityComponent> = _entityComponents[entity] as Vector.<IEntityComponent>
 			if (components == null)
@@ -85,12 +86,13 @@ package quadra.world.managers
 			
 			for (var i:int = 0; i < components.length; ++i)
 			{
-				if (components[i] is typeClass)
+				if (components[i] is componentClass)
 				{
-					var type:ComponentType = ComponentTypeManager.getTypeFor(typeClass)
+					components[i].shutdown();
+					var type:ComponentType = ComponentTypeManager.getTypeFor(componentClass)
 					var removed:IEntityComponent = components.splice(i, 1)[0];
 					entity.typeBits.clearBit(type.id);
-					EventManager.dispatchEventWith(EntityEvent.COMPONENT_REMOVED, { entity:entity, component:removed });
+					EventManager.global.dispatchEventWith(EntityEvent.COMPONENT_REMOVED, { entity:entity, component:removed });
 					return;
 				}
 			}			
@@ -104,12 +106,36 @@ package quadra.world.managers
 				return;
 			}
 			
+			for (var i:int = 0; i < components.length; ++i)
+			{
+				components[i].shutdown();
+			}
+			
 			components.length = 0;
+		}
+		
+		public function getEntityComponent(entity:Entity, componentClass:Class):IEntityComponent
+		{
+			var components:Vector.<IEntityComponent> = _entityComponents[entity] as Vector.<IEntityComponent>
+			if (components == null)
+			{
+				return null;
+			}
+			
+			for (var i:int = 0; i < components.length; ++i)
+			{
+				if (components[i] is componentClass)
+				{
+					return components[i];
+				}
+			}
+			
+			return null;
 		}
 		
 		public function refresh(entity:Entity):void
 		{
-			EventManager.dispatchEventWith(EntityEvent.REFRESHED, entity);
+			EventManager.global.dispatchEventWith(EntityEvent.REFRESHED, entity);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package quadra.world.managers
 {
+	import flash.utils.Dictionary;
 	import quadra.world.EntityWorld;
 	import quadra.world.systems.EntitySystem;
 
@@ -7,16 +8,19 @@ package quadra.world.managers
 	{
 		private var _world:EntityWorld;
 		private var _systems:Vector.<EntitySystem>
+		private var _systemsMap:Dictionary;
 		
 		public function SystemManager(world:EntityWorld)
 		{
 			_world = world;
 			_systems = new Vector.<EntitySystem>();
+			_systemsMap = new Dictionary();
 		}
 		
 		public function addSystem(system:EntitySystem):void
 		{
 			_systems.push(system);
+			_systemsMap[system.type] = system;
 		}
 		
 		public function removeSystem(system:EntitySystem):void
@@ -29,6 +33,8 @@ package quadra.world.managers
 					system.enabled = false;
 				}
 			}
+			
+			_systems[system.type] = null;
 		}
 		
 		public function removeAllSystems():void
@@ -39,6 +45,13 @@ package quadra.world.managers
 				_systems[i].clear();
 			}
 			_systems.length = 0;
+			
+			_systemsMap = new Dictionary();
+		}
+		
+		public function getSystem(systemClass:Class):EntitySystem
+		{
+			return _systemsMap[SystemTypeManager.getTypeFor(systemClass).id];
 		}
 		
 		public function update(elapsedTime:Number):void
