@@ -5,6 +5,7 @@ package quadra.world.systems
 	import flash.utils.getQualifiedClassName;
 	import quadra.core.EventManager;
 	import quadra.world.Entity;
+	import quadra.world.EntityFilter;
 	import quadra.world.events.EntityEvent;
 	import quadra.world.managers.SystemTypeManager;
 	import starling.events.Event;

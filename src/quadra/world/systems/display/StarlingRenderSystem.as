@@ -4,7 +4,7 @@ package quadra.world.systems.display
 	import quadra.world.components.SpatialComponent;
 	import quadra.world.components.StarlingDisplayComponent;
 	import quadra.world.Entity;
-	import quadra.world.systems.EntityFilter;
+	import quadra.world.EntityFilter;
 	import quadra.world.systems.EntitySystem;
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;

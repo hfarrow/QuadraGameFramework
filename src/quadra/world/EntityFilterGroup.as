@@ -1,4 +1,4 @@
-package quadra.world.systems
+package quadra.world
 {
 	import quadra.world.Entity;
 

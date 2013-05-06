@@ -11,6 +11,7 @@ package quadra.world.systems
 	import quadra.world.components.SpatialComponent;
 	import quadra.world.components.VelocityComponent;
 	import quadra.world.Entity;
+	import quadra.world.EntityFilter;
 	import quadra.world.events.EntityEvent;
 	import starling.core.Starling;
 
