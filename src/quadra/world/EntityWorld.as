@@ -2,11 +2,13 @@ package quadra.world
 {
 	import quadra.world.managers.EntityManager;
 	import quadra.world.managers.SystemManager;
+	import quadra.world.managers.TagManager;
 
 	public class EntityWorld
 	{
 		private var _entityManager:EntityManager;
 		private var _systemManager:SystemManager;
+		private var _tagManager:TagManager;
 		
 		public function EntityWorld()
 		{
@@ -22,6 +24,11 @@ package quadra.world
 		public function get systemManager():SystemManager
 		{
 			return _systemManager;
+		}
+		
+		public function get tagManager():TagManager
+		{
+			return _tagManager;
 		}
 		
 		public function createEntity(uniqueId:String=null):Entity

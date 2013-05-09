@@ -6,13 +6,15 @@ package quadra.world.systems
 	import quadra.core.EventManager;
 	import quadra.world.Entity;
 	import quadra.world.EntityFilter;
+	import quadra.world.EntityWorld;
 	import quadra.world.events.EntityEvent;
 	import quadra.world.managers.SystemTypeManager;
 	import starling.events.Event;
 
 	public class EntitySystem
 	{
-		private var _type:uint;
+		protected var _type:uint;
+		protected var _world:EntityWorld;
 		private var _filter:EntityFilter;
 		private var _entities:Vector.<Entity>;
 		private var _entityIndexMap:Dictionary;
@@ -35,6 +37,16 @@ package quadra.world.systems
 		{
 			_entities.length = 0;
 			_entityIndexMap = new Dictionary();
+		}
+		
+		public function get world():EntityWorld
+		{
+			return _world;
+		}
+		
+		public function set world(value:EntityWorld):void
+		{
+			_world = value;
 		}
 		
 		//public function set type(value:uint):void
@@ -77,7 +89,7 @@ package quadra.world.systems
 			// override this
 		}
 		
-		public function onEntityRefreshed(event:Event):void
+		protected function onEntityRefreshed(event:Event):void
 		{
 			if (!enabled)
 			{

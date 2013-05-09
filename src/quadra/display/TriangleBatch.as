@@ -137,7 +137,7 @@ package quadra.display
 		
 		public override function render(support:RenderSupport, parentAlpha:Number):void
         {
-            if (_vertexData.numVertices > 3)
+            if (_vertexData.numVertices >= 3)
             {
                 support.finishQuadBatch();
                 support.raiseDrawCount();

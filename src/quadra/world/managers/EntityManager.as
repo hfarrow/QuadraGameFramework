@@ -66,7 +66,6 @@ package quadra.world.managers
 			components.push(component);
 			
 			entity.typeBits.setBit(type.id);
-			component.init(entity);
 			
 			EventManager.global.dispatchEventWith(EntityEvent.COMPONENT_ADDED, { entity:entity, component:component });
 		}
@@ -88,7 +87,6 @@ package quadra.world.managers
 			{
 				if (components[i] is componentClass)
 				{
-					components[i].shutdown();
 					var type:ComponentType = ComponentTypeManager.getTypeFor(componentClass)
 					var removed:IEntityComponent = components.splice(i, 1)[0];
 					entity.typeBits.clearBit(type.id);
@@ -104,11 +102,6 @@ package quadra.world.managers
 			if (components == null)
 			{
 				return;
-			}
-			
-			for (var i:int = 0; i < components.length; ++i)
-			{
-				components[i].shutdown();
 			}
 			
 			components.length = 0;

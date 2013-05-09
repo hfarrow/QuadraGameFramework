@@ -1,14 +1,16 @@
-package quadra.world.systems.display
+package quadra.world.systems.lib.display
 {
+	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
-	import quadra.world.components.SpatialComponent;
-	import quadra.world.components.StarlingDisplayComponent;
+	import quadra.world.components.lib.SpatialComponent;
+	import quadra.world.components.lib.StarlingDisplayComponent;
 	import quadra.world.Entity;
 	import quadra.world.EntityFilter;
 	import quadra.world.systems.EntitySystem;
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.Sprite;
+	import starling.utils.RectangleUtil;
 
 	public class StarlingRenderSystem extends EntitySystem
 	{
@@ -63,12 +65,17 @@ package quadra.world.systems.display
 		protected override function onEntityAdded(entity:Entity):void 
 		{			
 			var display:StarlingDisplayComponent = StarlingDisplayComponent(entity.getComponent(StarlingDisplayComponent));
+			var spatial:SpatialComponent = SpatialComponent(entity.getComponent(SpatialComponent));
+			
 			if (_layers[display.layer] == null)
 			{
 				addRenderLayer("auto_" + display.layer, display.layer);
 			}
 			
 			_layers[display.layer].container.addChild(display.displayObject);
+			display.displayObject.x = spatial.x;
+			display.displayObject.y = spatial.y;
+			display.displayObject.rotation = spatial.rotation;
 		}
 		
 		protected override function onEntityRemoved(entity:Entity):void
@@ -79,12 +86,30 @@ package quadra.world.systems.display
 		
 		protected override function processEntities(entities:Vector.<Entity>, elaspedTime:Number):void
 		{
-			/*
+			// helper for recentering entities.
+			var rect:Rectangle = new Rectangle();
+			
 			for (var i:int = 0; i < entities.length; ++i)
 			{
 				var entity:Entity = entities[i];
+				var display:StarlingDisplayComponent = StarlingDisplayComponent(entity.getComponent(StarlingDisplayComponent));
+				var spatial:SpatialComponent = SpatialComponent(entity.getComponent(SpatialComponent));
+				display.displayObject.x = spatial.x;
+				display.displayObject.y = spatial.y;
+				display.displayObject.rotation = spatial.rotation;
+				
+				if (display.autoCenter)
+				{
+					//display.displayObject.pivotX = display.displayObject.width / 2;
+					//display.displayObject.pivotY = display.displayObject.height / 2;
+					
+					var displayObject:DisplayObject = display.displayObject;
+					
+					displayObject.getBounds(displayObject, rect);
+					displayObject.pivotX = rect.width / 2;
+					displayObject.pivotY = rect.height / 2;
+				}
 			}
-			*/
 		}
 		
 		public override function update(elapsedTime:Number):void
