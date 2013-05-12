@@ -13,12 +13,14 @@ package quadra.display.filters
 	public class AlphaTestFilter extends FragmentFilter
 	{
 		private var mVars:Vector.<Number> = new <Number>[.8,0,0,0]; // x is used as an alpha threshold for kil
-		private var mColor:Vector.<Number> = new <Number>[0,0,1,0];
+		private var mColor:Vector.<Number> = new <Number>[1,1,1,1];
 		private var mShaderProgram:Program3D;
  
-		public function AlphaTestFilter()
+		public function AlphaTestFilter(alphaCutOff:Number, finalAlpha:Number)
 		{
 			mode = FragmentFilterMode.REPLACE;
+			mVars[0] = alphaCutOff;
+			mColor[3] = finalAlpha;
 		}
  
 		public override function dispose():void
@@ -33,6 +35,7 @@ package quadra.display.filters
 				"tex ft0, v0, fs0 <2d,clamp,linear> \n" +
 				"sub ft1.x ft0.w fc0.x \n" +
 				"kil ft1.x \n" +
+				"mul ft0 ft0 fc1 \n" +
 				"mov oc, ft0 \n";
  
 			mShaderProgram = assembleAgal(fragmentProgramCode);
