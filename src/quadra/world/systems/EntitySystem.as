@@ -35,6 +35,7 @@ package quadra.world.systems
 			_type = SystemTypeManager.getTypeFor(typeClass).id;
 			
 			EventManager.global.addEventListener(EntityEvent.REFRESHED, onEntityRefreshed);
+			EventManager.global.addEventListener(EntityEvent.REMOVED, onEntityRemovedFromWorld);
 		}
 		
 		public function init():void
@@ -120,6 +121,24 @@ package quadra.world.systems
 			}
 		}
 		
+		protected function onEntityRemovedFromWorld(event:Event):void
+		{
+			if (!enabled)
+			{
+				return;
+			}
+			
+			var entity:Entity = Entity(event.data);
+			
+			var contains:Boolean = entity.systemBits.isBitSet(_type);
+			var isFiltered:Boolean = _filter.isFiltered(entity);
+			
+			if (contains)
+			{
+				removeEntity(entity);
+			}
+		}
+		
 		protected function addEntity(entity:Entity):void
 		{
 			if (_entityIndexMap[entity.id] == null)
@@ -133,11 +152,21 @@ package quadra.world.systems
 		
 		protected function removeEntity(entity:Entity):void
 		{
-			if (_entityIndexMap[entity.id] == null)
+			if (_entityIndexMap[entity.id] != null)
 			{
+				var index:int = _entityIndexMap[entity.id];
+				_entities.splice(index, 1);
 				_entityIndexMap[entity.id] = null;
-				_entities.splice(_entityIndexMap[entity.id], 1); 
 				entity.systemBits.clearBit(_type);
+				
+				// Todo remove splice and swap entities instead?
+				
+				// Recalculate index map because enties have shifted.
+				for (var i:int = index; i < _entities.length; ++i)
+				{
+					_entityIndexMap[_entities[i].id] = i;
+				}
+				
 				onEntityRemoved(entity);
 			}
 		}

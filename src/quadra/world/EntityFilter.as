@@ -72,7 +72,7 @@ package quadra.world
 		{
 			if (_containsTypeMap.isEmpty() && _excludesTypeMap.isEmpty() && _oneTypesMap.isEmpty())
             {
-                return false;
+                return true;
             }
 			
 			return (_oneTypesMap.intersects(entity.typeBits) || _oneTypesMap.isEmpty()) &&
