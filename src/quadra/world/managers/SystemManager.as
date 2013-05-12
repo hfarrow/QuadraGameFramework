@@ -22,6 +22,7 @@ package quadra.world.managers
 			_systems.push(system);
 			_systemsMap[system.type] = system;
 			system.world = _world;
+			system.init();
 		}
 		
 		public function removeSystem(system:EntitySystem):void

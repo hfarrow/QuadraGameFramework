@@ -15,13 +15,17 @@ package quadra.world.systems
 	{
 		protected var _type:uint;
 		protected var _world:EntityWorld;
-		private var _filter:EntityFilter;
+		protected var _filter:EntityFilter;
 		private var _entities:Vector.<Entity>;
 		private var _entityIndexMap:Dictionary;
 		public var enabled:Boolean;
 		
-		public function EntitySystem(filter:EntityFilter)
+		public function EntitySystem(filter:EntityFilter = null)
 		{
+			if (filter == null)
+			{
+				filter = EntityFilter.empty();
+			}
 			_filter = filter;
 			_entities = new Vector.<Entity>();
 			_entityIndexMap = new Dictionary();
@@ -31,7 +35,12 @@ package quadra.world.systems
 			_type = SystemTypeManager.getTypeFor(typeClass).id;
 			
 			EventManager.global.addEventListener(EntityEvent.REFRESHED, onEntityRefreshed);
-		}	
+		}
+		
+		public function init():void
+		{
+			
+		}
 		
 		public function clear():void
 		{

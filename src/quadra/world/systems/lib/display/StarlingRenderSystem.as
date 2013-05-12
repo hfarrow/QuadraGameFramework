@@ -22,11 +22,9 @@ package quadra.world.systems.lib.display
 			super(EntityFilter.all([SpatialComponent, StarlingDisplayComponent]));
 			_container = container;
 			_layers = new Dictionary();
-			
-			init();
 		}
 		
-		private function init():void
+		public override function init():void
 		{
 			var defaultLayer:Sprite = new Sprite();
 			addRenderLayer("default", -1);

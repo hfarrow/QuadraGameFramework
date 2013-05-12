@@ -15,13 +15,8 @@ package quadra.world.components.lib
 		{
 			_displayObject = displayObject;
 			_layer = layer;
+			this.lockedRotation = lockedRotation;
 			this.autoCenter = autoCenter;
-			
-			if (autoCenter)
-			{
-				_displayObject.pivotX = _displayObject.width / 2;
-				_displayObject.pivotY = _displayObject.height / 2;
-			}
 		}
 		
 		public function get displayObject():DisplayObject

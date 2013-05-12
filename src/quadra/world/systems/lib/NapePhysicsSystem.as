@@ -40,11 +40,9 @@ package quadra.world.systems.lib
 			}
 			_gravity = gravity;
 			_bodies = new Vector.<Body>();
-			
-			init();
 		}
 		
-		private function init():void
+		public override function init():void
 		{
 			_space = new Space(_gravity);
 			_physicsDebug = new ShapeDebug(QuadraGame.current.stage.stageWidth, QuadraGame.current.stage.stageHeight, QuadraGame.current.stage.color);
@@ -55,12 +53,18 @@ package quadra.world.systems.lib
             _simulationTime = 0.0;
 		}
 		
+		public function get space():Space
+		{
+			return _space;
+		}
+		
 		protected override function onEntityAdded(entity:Entity):void 
 		{			
 			var physics:NapePhysicsComponent = NapePhysicsComponent(entity.getComponent(NapePhysicsComponent));
 			var spatial:SpatialComponent = SpatialComponent(entity.getComponent(SpatialComponent));
 			var velocity:VelocityComponent = VelocityComponent(entity.getComponent(VelocityComponent));
 			physics.body.space = _space;	
+			physics.body.userData.entity = entity;
 			
 			spatial.x = physics.body.position.x;
 			spatial.y = physics.body.position.y;
@@ -72,6 +76,7 @@ package quadra.world.systems.lib
 		{
 			var physics:NapePhysicsComponent = NapePhysicsComponent(entity.getComponent(NapePhysicsComponent));
 			physics.body.space = null;
+			physics.body.userData.entity = null;
 		}
 		
 		protected override function processEntities(entities:Vector.<Entity>, elaspedTime:Number):void

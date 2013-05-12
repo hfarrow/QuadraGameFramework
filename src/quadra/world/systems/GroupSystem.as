@@ -9,9 +9,9 @@ package quadra.world.systems
 	{
 		private var _groupId:uint;
 		
-		public function GroupSystem(groupId:uint)
+		public function GroupSystem(groupId:uint, filter:EntityFilter = null)
 		{
-			super(EntityFilter.empty());
+			super(filter);
 			
 			_groupId = groupId;
 		}
@@ -31,7 +31,7 @@ package quadra.world.systems
 			var entity:Entity = Entity(event.data);
 			
 			var contains:Boolean = entity.systemBits.isBitSet(_type);
-			var isFiltered:Boolean = entity.isInGroup(_groupId);
+			var isFiltered:Boolean = entity.isInGroup(_groupId) && _filter.isFiltered(entity);
 			
 			if (isFiltered && !contains) 
 			{

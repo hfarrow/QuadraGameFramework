@@ -14,6 +14,7 @@ package quadra.world
 		{
 			_entityManager = new EntityManager(this);
 			_systemManager = new SystemManager(this);
+			_tagManager = new TagManager();
 		}
 		
 		public function get entityManager():EntityManager
