@@ -22,10 +22,6 @@ package quadra.world.systems
 		
 		public function EntitySystem(filter:EntityFilter = null)
 		{
-			if (filter == null)
-			{
-				filter = EntityFilter.empty();
-			}
 			_filter = filter;
 			_entities = new Vector.<Entity>();
 			_entityIndexMap = new Dictionary();
@@ -35,7 +31,6 @@ package quadra.world.systems
 			_type = SystemTypeManager.getTypeFor(typeClass).id;
 			
 			EventManager.global.addEventListener(EntityEvent.REFRESHED, onEntityRefreshed);
-			EventManager.global.addEventListener(EntityEvent.REMOVED, onEntityRemovedFromWorld);
 		}
 		
 		public function init():void
@@ -109,31 +104,21 @@ package quadra.world.systems
 			var entity:Entity = Entity(event.data);
 			
 			var contains:Boolean = entity.systemBits.isBitSet(_type);
-			var isFiltered:Boolean = _filter.isFiltered(entity);
+			var isFiltered:Boolean = true;
+			if (_filter != null)
+			{
+				isFiltered = _filter.isFiltered(entity);
+			}
+			else
+			{
+				isFiltered = false;
+			}
 			
 			if (isFiltered && !contains)
 			{
 				addEntity(entity);
 			}
 			else if (!isFiltered && contains)
-			{
-				removeEntity(entity);
-			}
-		}
-		
-		protected function onEntityRemovedFromWorld(event:Event):void
-		{
-			if (!enabled)
-			{
-				return;
-			}
-			
-			var entity:Entity = Entity(event.data);
-			
-			var contains:Boolean = entity.systemBits.isBitSet(_type);
-			var isFiltered:Boolean = _filter.isFiltered(entity);
-			
-			if (contains)
 			{
 				removeEntity(entity);
 			}

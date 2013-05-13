@@ -10,12 +10,14 @@ package quadra.world
 		private var _oneTypesMap:BitField;
 		private var _containsTypeMap:BitField;
 		private var _excludesTypeMap:BitField;
+		private var _includeAllEntites:Boolean;
 		
 		public function EntityFilter()
 		{
 			_oneTypesMap = new BitField();
 			_containsTypeMap = new BitField();
 			_excludesTypeMap = new BitField();
+			_includeAllEntites = false;
 		}
 		
 		public static function empty():EntityFilter
@@ -36,6 +38,13 @@ package quadra.world
 		public static function one(types:Array):EntityFilter
 		{
 			return new EntityFilter().addOne(types);
+		}
+		
+		public static function allEntities():EntityFilter
+		{
+			var filter:EntityFilter = new EntityFilter();
+			filter._includeAllEntites = true;
+			return filter;
 		}
 		
 		public function addAll(types:Array):EntityFilter
@@ -72,7 +81,7 @@ package quadra.world
 		{
 			if (_containsTypeMap.isEmpty() && _excludesTypeMap.isEmpty() && _oneTypesMap.isEmpty())
             {
-                return true;
+                return _includeAllEntites;
             }
 			
 			return (_oneTypesMap.intersects(entity.typeBits) || _oneTypesMap.isEmpty()) &&

@@ -12,6 +12,7 @@ package quadra.world
 		private var _typeBits:BitField;
 		private var _systemBits:BitField;
 		private var _groupBits:BitField;
+		private var _removed:Boolean;
 		
 		public function Entity(world:EntityWorld, guid:String)
 		{
@@ -22,6 +23,8 @@ package quadra.world
 			_typeBits = new BitField();
 			_systemBits = new BitField();
 			_groupBits = new BitField();
+			
+			_removed = false;
 		}
 		
 		public function removeFromWorld():void
@@ -36,6 +39,7 @@ package quadra.world
 			_systemBits.clearAllBits();
 			_groupBits.clearAllBits();
 			_id = -1;
+			_removed = false;
 		}
 		
 		public function get guid():String
@@ -88,6 +92,11 @@ package quadra.world
 			return _groupBits.isBitSet(groupId);
 		}
 		
+		public function clearGroups():void
+		{
+			_groupBits.clearAllBits();
+		}
+		
 		public function get tag():String
 		{
 			return _world.tagManager.getTagOfEntity(this);
@@ -103,6 +112,16 @@ package quadra.world
 			{
 				_world.tagManager.unregisterTag(value);
 			}
+		}
+		
+		public function get removed():Boolean
+		{
+			return _removed;
+		}
+		
+		public function set removed(value:Boolean):void
+		{
+			_removed = value;
 		}
 		
 		public function addComponent(component:IEntityComponent):void

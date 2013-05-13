@@ -31,13 +31,21 @@ package quadra.world.systems
 			var entity:Entity = Entity(event.data);
 			
 			var contains:Boolean = entity.systemBits.isBitSet(_type);
-			var isFiltered:Boolean = entity.isInGroup(_groupId) && _filter.isFiltered(entity);
+			var isFiltered:Boolean;
+			if (filter != null)
+			{
+				isFiltered = entity.isInGroup(_groupId) && _filter.isFiltered(entity);
+			}
+			else
+			{
+				isFiltered = entity.isInGroup(_groupId);
+			}
 			
 			if (isFiltered && !contains) 
 			{
 				addEntity(entity);
 			}
-			else if (!isFiltered && contains)
+			else if (contains && !isFiltered)
 			{
 				removeEntity(entity);
 			}

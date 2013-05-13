@@ -47,8 +47,12 @@ package quadra.world.managers
 			if (_activeEntities[entity.id] != null)
 			{
 				_activeEntities[entity.id] = null;
-				EventManager.global.dispatchEventWith(EntityEvent.REMOVED, entity);
-				entity.clear();
+				entity.removed = true;
+				EventManager.global.dispatchEventWith(EntityEvent.REMOVED, entity)
+				entity.typeBits.clearAllBits();
+				entity.clearGroups();
+				entity.refresh(); // Removes from systems.
+				entity.clear();				
 			}
 		}
 		
