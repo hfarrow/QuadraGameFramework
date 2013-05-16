@@ -21,16 +21,8 @@ package quadra.world.systems
 			return _groupId;
 		}
 		
-		protected override function onEntityRefreshed(event:Event):void
+		protected override function isEntityFiltered(entity:Entity):Boolean
 		{
-			if (!enabled)
-			{
-				return;
-			}
-			
-			var entity:Entity = Entity(event.data);
-			
-			var contains:Boolean = entity.systemBits.isBitSet(_type);
 			var isFiltered:Boolean;
 			if (filter != null)
 			{
@@ -41,14 +33,7 @@ package quadra.world.systems
 				isFiltered = entity.isInGroup(_groupId);
 			}
 			
-			if (isFiltered && !contains) 
-			{
-				addEntity(entity);
-			}
-			else if (contains && !isFiltered)
-			{
-				removeEntity(entity);
-			}
+			return isFiltered;
 		}
 	}
 }

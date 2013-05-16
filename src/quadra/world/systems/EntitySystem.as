@@ -104,6 +104,20 @@ package quadra.world.systems
 			var entity:Entity = Entity(event.data);
 			
 			var contains:Boolean = entity.systemBits.isBitSet(_type);
+			var isFiltered:Boolean = isEntityFiltered(entity);			
+			
+			if (isFiltered && !contains)
+			{
+				addEntity(entity);
+			}
+			else if (!isFiltered && contains)
+			{
+				removeEntity(entity);
+			}
+		}
+		
+		protected function isEntityFiltered(entity:Entity):Boolean
+		{
 			var isFiltered:Boolean = true;
 			if (_filter != null)
 			{
@@ -114,14 +128,7 @@ package quadra.world.systems
 				isFiltered = false;
 			}
 			
-			if (isFiltered && !contains)
-			{
-				addEntity(entity);
-			}
-			else if (!isFiltered && contains)
-			{
-				removeEntity(entity);
-			}
+			return isFiltered;
 		}
 		
 		protected function addEntity(entity:Entity):void
