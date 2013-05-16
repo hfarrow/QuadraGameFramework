@@ -1,4 +1,4 @@
-package quadra.world.components.lib
+package quadra.world.lib.components
 {
 	import quadra.world.IEntityComponent;
 	

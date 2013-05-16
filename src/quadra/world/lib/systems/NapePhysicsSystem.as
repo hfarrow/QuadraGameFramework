@@ -1,4 +1,4 @@
-package quadra.world.systems.lib
+package quadra.world.lib.systems
 {
 	import flash.utils.getTimer;
 	import nape.geom.Vec2;
@@ -8,9 +8,9 @@ package quadra.world.systems.lib
 	import nape.util.Debug;
 	import nape.util.ShapeDebug;
 	import quadra.core.QuadraGame;
-	import quadra.world.components.lib.NapePhysicsComponent;
-	import quadra.world.components.lib.SpatialComponent;
-	import quadra.world.components.lib.VelocityComponent;
+	import quadra.world.lib.components.NapePhysicsComponent;
+	import quadra.world.lib.components.SpatialComponent;
+	import quadra.world.lib.components.VelocityComponent;
 	import quadra.world.Entity;
 	import quadra.world.EntityFilter;
 	import quadra.world.events.EntityEvent;

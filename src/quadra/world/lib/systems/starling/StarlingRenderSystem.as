@@ -1,11 +1,11 @@
-package quadra.world.systems.lib.display
+package quadra.world.lib.systems.starling
 {
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
-	import quadra.world.components.lib.SpatialComponent;
-	import quadra.world.components.lib.StarlingDisplayComponent;
+	import quadra.world.lib.components.SpatialComponent;
 	import quadra.world.Entity;
 	import quadra.world.EntityFilter;
+	import quadra.world.lib.components.StarlingDisplayComponent;
 	import quadra.world.systems.EntitySystem;
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
