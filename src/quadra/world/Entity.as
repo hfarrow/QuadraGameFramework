@@ -14,11 +14,15 @@ package quadra.world
 		private var _groupBits:BitField;
 		private var _removed:Boolean;
 		
-		public function Entity(world:EntityWorld, guid:String)
+		// name is intended to help with debugging.
+		public var debugName:String;
+		
+		public function Entity(world:EntityWorld, guid:String, debugName:String = "no-name")
 		{
 			_world = world;
 			_guid = guid;
 			_entityManager = _world.entityManager;
+			this.debugName = debugName;
 			
 			_typeBits = new BitField();
 			_systemBits = new BitField();
@@ -147,6 +151,11 @@ package quadra.world
 		public function refresh():void
 		{
 			_entityManager.refresh(this);
+		}
+		
+		public function toString():String
+		{
+			return "Entity{" + debugName + ": type=" + _typeBits.toString() + " group=" + _groupBits.toString() + "}";
 		}
 	}
 }

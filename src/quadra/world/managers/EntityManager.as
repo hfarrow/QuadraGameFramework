@@ -25,15 +25,11 @@ package quadra.world.managers
 			_entityComponents = new Dictionary();
 		}
 		
-		public function createEntity(uniqueId:String = null):Entity
+		public function createEntity(debugName:String = null):Entity
 		{
-			//if uniqueId is 0, generate a new unique ID.
-			if (uniqueId == null)
-			{
-				uniqueId = GUID.create();
-			}
+			var uniqueId:String = GUID.create();
 			
-			var entity:Entity = new Entity(_world, uniqueId);
+			var entity:Entity = new Entity(_world, uniqueId, debugName);
 			entity.id = _nextEntityId++;
 			_activeEntities[entity.id] = entity;
 			

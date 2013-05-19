@@ -29,6 +29,7 @@ package quadra.core
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			
 			inputManager = new InputManager();
+			init();
 		}
 			
 		protected function onEnterFrame(e:EnterFrameEvent):void

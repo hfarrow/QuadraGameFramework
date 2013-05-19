@@ -32,9 +32,9 @@ package quadra.world
 			return _tagManager;
 		}
 		
-		public function createEntity(uniqueId:String=null):Entity
+		public function createEntity(debugName:String=null):Entity
 		{
-			return _entityManager.createEntity(uniqueId);
+			return _entityManager.createEntity(debugName);
 		}
 		
 		public function removeEntity(entity:Entity):void

@@ -170,5 +170,10 @@ package quadra.utils
 			this.and(other, _sHelper);			
 			return _sHelper.equals(this);
 		}
+		
+		public function toString():String
+		{
+			return _bytes.toString();
+		}
 	}
 }

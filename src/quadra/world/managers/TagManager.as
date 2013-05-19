@@ -37,7 +37,7 @@ package quadra.world.managers
 			for each (var key:String in _tagMap)
 			{
 				var taggedEntity:Entity = _tagMap[key];
-				if (taggedEntity != entity)
+				if (taggedEntity == entity)
 				{
 					return key;
 				}
