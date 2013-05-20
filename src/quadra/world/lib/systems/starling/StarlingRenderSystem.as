@@ -10,70 +10,105 @@ package quadra.world.lib.systems.starling
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.Sprite;
+	import starling.textures.RenderTexture;
 	import starling.utils.RectangleUtil;
 
 	public class StarlingRenderSystem extends EntitySystem
 	{
-		private var _container:DisplayObjectContainer;
-		private var _layers:Dictionary;
+		private var _root:DisplayObjectContainer;
+		private var _layers:RenderLayerManager;
+		private var _renderTargetManager:RenderTargetManager;
 		
-		public function StarlingRenderSystem(container:DisplayObjectContainer)
+		public function StarlingRenderSystem(root:DisplayObjectContainer)
 		{
-			super(EntityFilter.all([SpatialComponent, StarlingDisplayComponent]));
-			_container = container;
-			_layers = new Dictionary();
+			super(EntityFilter.all([StarlingDisplayComponent]));
+			_root = root;
+			_layers = new RenderLayerManager(_root);
+			_renderTargetManager = new RenderTargetManager();
 		}
 		
 		public override function init():void
 		{
 			var defaultLayer:Sprite = new Sprite();
-			addRenderLayer("default", -1);
+			_layers.addRenderLayer("default", -1);
 		}
 		
-		public function addRenderLayer(name:String, layer:int):void
+		public function addRenderTarget(name:String, renderTexture:RenderTexture):void
 		{
-			if (_layers[layer] != null)
-			{
-				throw new Error("A layer named '" + _layers[layer].name + "' at index " + layer + " already exists.");
-			}
-			
-			var layerSprite:Sprite = new Sprite();
-			_layers[layer] = new RenderLayer(name, layer, layerSprite);			
-			
-			for (var i:int = 0; i <= _container.numChildren; ++i)
-			{
-				if (i == _container.numChildren)
-				{
-					layerSprite.name = i.toString();
-					_container.addChild(layerSprite);
-					break;
-				}
-				
-				var child:DisplayObject = _container.getChildAt(i);
-				var childLayer:int = int(child.name);
-				if (childLayer > int(layer))
-				{
-					layerSprite.name = i.toString();
-					_container.addChildAt(layerSprite, i);
-					break;
-				}
-			}
+			_renderTargetManager.addRenderTarget(name, renderTexture);
+		}
+		
+		public function removeRenderTarget(name:String, dispose:Boolean):void
+		{
+			_renderTargetManager.removeRenderTarget(name, dispose);
+		}
+		
+		public function getRenderTargetTexture(name:String):RenderTexture
+		{
+			return _renderTargetManager.getRenderTargetTexture(name);
 		}
 		
 		protected override function onEntityAdded(entity:Entity):void 
 		{			
 			var display:StarlingDisplayComponent = StarlingDisplayComponent(entity.getComponent(StarlingDisplayComponent));
-			var spatial:SpatialComponent = SpatialComponent(entity.getComponent(SpatialComponent));
+			var spatial:SpatialComponent = entity.getComponent(SpatialComponent) as SpatialComponent;
 			
-			if (_layers[display.layer] == null)
+			if (display.renderTargetName != null)
 			{
-				addRenderLayer("auto_" + display.layer, display.layer);
+				addEntityToRenderTarget(display);
+			}
+			else
+			{
+				addEntityToRoot(display);
 			}
 			
-			_layers[display.layer].container.addChild(display.displayObject);
-			display.displayObject.x = spatial.x;
-			display.displayObject.y = spatial.y;
-			display.displayObject.rotation = spatial.rotation;
+			if (spatial != null)
+			{
+				display.displayObject.x = spatial.x;
+				display.displayObject.y = spatial.y;
+				display.displayObject.rotation = spatial.rotation;
+			}
+			display.renderTargetChanged.add(onEntityRenderTargetChanged);
+		}
+		
+		private function addEntityToRoot(display:StarlingDisplayComponent):void
+		{
+			_layers.addToLayer(display, display.layer);
+		}
+		
+		private function addEntityToRenderTarget(display:StarlingDisplayComponent):void
+		{
+			if (!_renderTargetManager.doesRenderTargetExist(display.renderTargetName))
+			{
+				_renderTargetManager.addRenderTarget(display.renderTargetName, new RenderTexture(_root.stage.stageWidth, _root.stage.stageHeight));
+			}
+			
+			var layers:RenderLayerManager = _renderTargetManager.getRenderTargetLayers(display.renderTargetName);			
+			layers.addToLayer(display, display.layer);
+		}
+		
+		private function removeEntityFromRoot(display:StarlingDisplayComponent):void
+		{
+			display.displayObject.removeFromParent();
+		}
+		
+		private function removeEntityFromRenderTarget(display:StarlingDisplayComponent, renderTargetName:String):void
+		{
+			display.displayObject.removeFromParent();
+		}
+		
+		private function onEntityRenderTargetChanged(display:StarlingDisplayComponent, oldRenderTargetName:String):void
+		{
+			if (oldRenderTargetName == null)
+			{
+				removeEntityFromRoot(display);
+				addEntityToRenderTarget(display);
+			}
+			else
+			{
+				removeEntityFromRenderTarget(display, oldRenderTargetName);
+				addEntityToRoot(display);				
+			}
 		}
 		
 		protected override function onEntityRemoved(entity:Entity):void
@@ -91,10 +126,14 @@ package quadra.world.lib.systems.starling
 			{
 				var entity:Entity = entities[i];
 				var display:StarlingDisplayComponent = StarlingDisplayComponent(entity.getComponent(StarlingDisplayComponent));
-				var spatial:SpatialComponent = SpatialComponent(entity.getComponent(SpatialComponent));
-				display.displayObject.x = spatial.x;
-				display.displayObject.y = spatial.y;
-				display.displayObject.rotation = spatial.rotation;
+				var spatial:SpatialComponent = entity.getComponent(SpatialComponent) as SpatialComponent;
+				
+				if (spatial != null)
+				{
+					display.displayObject.x = spatial.x;
+					display.displayObject.y = spatial.y;
+					display.displayObject.rotation = spatial.rotation;
+				}
 				
 				if (display.autoCenter)
 				{
@@ -113,6 +152,8 @@ package quadra.world.lib.systems.starling
 		public override function update(elapsedTime:Number):void
 		{			
 			super.update(elapsedTime);
+			
+			_renderTargetManager.render();
 		}
 	}
 }

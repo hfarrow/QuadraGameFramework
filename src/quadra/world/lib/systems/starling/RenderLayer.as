@@ -5,13 +5,13 @@ package quadra.world.lib.systems.starling
 	{
 		private var _name:String;
 		private var _layer:int;
-		private var _container:DisplayObjectContainer;
+		private var _root:DisplayObjectContainer;
 		
-		public function RenderLayer(name:String, layer:int, container:DisplayObjectContainer)
+		public function RenderLayer(name:String, layer:int, root:DisplayObjectContainer)
 		{
 			_name = name;
 			_layer = layer;
-			_container = container;
+			_root = root;
 		}
 		
 		public function get name():String
@@ -24,9 +24,9 @@ package quadra.world.lib.systems.starling
 			return _layer;
 		}
 		
-		public function get container():DisplayObjectContainer
+		public function get root():DisplayObjectContainer
 		{
-			return _container;
+			return _root;
 		}
 	}
 }
