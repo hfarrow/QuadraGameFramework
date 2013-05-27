@@ -14,6 +14,8 @@ package quadra.world.lib.systems
 	import quadra.world.Entity;
 	import quadra.world.EntityFilter;
 	import quadra.world.events.EntityEvent;
+	import quadra.world.lib.systems.starling.Camera;
+	import quadra.world.lib.systems.starling.StarlingRenderSystem;
 	import quadra.world.systems.EntitySystem;
 	import starling.core.Starling;
 
@@ -126,6 +128,10 @@ package quadra.world.lib.systems
 		
 		private function updateDebugPhysics(elapsedTime:Number):void
 		{
+			var camera:Camera = StarlingRenderSystem(world.systemManager.getSystem(StarlingRenderSystem)).camera;
+			_physicsDebug.display.x = -camera.x + camera.offsetX;
+			_physicsDebug.display.y = -camera.y + camera.offsetY;
+			_physicsDebug.display.rotation = -camera.rotation;
 			if (_isDebuggingPhysics)
 			{
 				_physicsDebug.clear();

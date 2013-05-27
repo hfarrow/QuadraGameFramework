@@ -2,6 +2,7 @@ package quadra.world.lib.systems.starling
 {
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
+	import quadra.core.QuadraGame;
 	import quadra.world.lib.components.SpatialComponent;
 	import quadra.world.Entity;
 	import quadra.world.EntityFilter;
@@ -9,22 +10,33 @@ package quadra.world.lib.systems.starling
 	import quadra.world.systems.EntitySystem;
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
+	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.textures.RenderTexture;
 	import starling.utils.RectangleUtil;
 
 	public class StarlingRenderSystem extends EntitySystem
 	{
+		private var _container:DisplayObjectContainer
 		private var _root:DisplayObjectContainer;
 		private var _layers:RenderLayerManager;
 		private var _renderTargetManager:RenderTargetManager;
+		private var _camera:Camera;
 		
-		public function StarlingRenderSystem(root:DisplayObjectContainer)
+		public function StarlingRenderSystem(container:DisplayObjectContainer)
 		{
 			super(EntityFilter.all([StarlingDisplayComponent]));
-			_root = root;
+			_container = container;
+			_root = new Sprite();
+			_container.addChild(_root);
 			_layers = new RenderLayerManager(_root);
 			_renderTargetManager = new RenderTargetManager();
+			_camera = new Camera();
+		}
+		
+		public function get camera():Camera
+		{
+			return _camera;
 		}
 		
 		public override function init():void
@@ -33,9 +45,13 @@ package quadra.world.lib.systems.starling
 			_layers.addRenderLayer("default", -1);
 		}
 		
-		public function addRenderTarget(name:String, renderTexture:RenderTexture):void
+		public function addRenderTarget(name:String, renderTexture:RenderTexture, attachToRoot:Boolean = false, rootLayer:int = -1, applyCameraToInput:Boolean = false, applyCameraToOutput:Boolean = false):void
 		{
-			_renderTargetManager.addRenderTarget(name, renderTexture);
+			var outputImage:Image = _renderTargetManager.addRenderTarget(name, renderTexture, applyCameraToInput, applyCameraToOutput);
+			if (attachToRoot)
+			{
+				_layers.addToLayer(outputImage, rootLayer);
+			}
 		}
 		
 		public function removeRenderTarget(name:String, dispose:Boolean):void
@@ -46,6 +62,11 @@ package quadra.world.lib.systems.starling
 		public function getRenderTargetTexture(name:String):RenderTexture
 		{
 			return _renderTargetManager.getRenderTargetTexture(name);
+		}
+		
+		public function getRenderTargetOutputImage(name:String):Image
+		{
+			return _renderTargetManager.getRenderTargetOutput(name);
 		}
 		
 		protected override function onEntityAdded(entity:Entity):void 
@@ -73,7 +94,7 @@ package quadra.world.lib.systems.starling
 		
 		private function addEntityToRoot(display:StarlingDisplayComponent):void
 		{
-			_layers.addToLayer(display, display.layer);
+			_layers.addToLayer(display.displayObject, display.layer);
 		}
 		
 		private function addEntityToRenderTarget(display:StarlingDisplayComponent):void
@@ -84,7 +105,7 @@ package quadra.world.lib.systems.starling
 			}
 			
 			var layers:RenderLayerManager = _renderTargetManager.getRenderTargetLayers(display.renderTargetName);			
-			layers.addToLayer(display, display.layer);
+			layers.addToLayer(display.displayObject, display.layer);
 		}
 		
 		private function removeEntityFromRoot(display:StarlingDisplayComponent):void
@@ -153,7 +174,10 @@ package quadra.world.lib.systems.starling
 		{			
 			super.update(elapsedTime);
 			
-			_renderTargetManager.render();
+			_root.x = -_camera.x + camera.offsetX;
+			_root.y = -_camera.y + camera.offsetY;
+			_root.rotation = - _camera.rotation;
+			_renderTargetManager.render(camera);
 		}
 	}
 }

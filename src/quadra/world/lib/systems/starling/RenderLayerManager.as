@@ -50,14 +50,14 @@ package quadra.world.lib.systems.starling
 			}
 		}
 		
-		public function addToLayer(display:StarlingDisplayComponent, layer:int):void
+		public function addToLayer(display:DisplayObject, layer:int):void
 		{
-			if (_layers[display.layer] == null)
+			if (_layers[layer] == null)
 			{
-				addRenderLayer("auto_" + display.layer, display.layer);
+				addRenderLayer("auto_" + layer, layer);
 			}
 			
-			_layers[display.layer].root.addChild(display.displayObject);
+			_layers[layer].root.addChild(display);
 		}
 	}
 

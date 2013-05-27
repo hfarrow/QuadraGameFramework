@@ -1,7 +1,9 @@
 package quadra.world.lib.systems.starling 
 {
+	import flash.geom.Matrix;
 	import flash.utils.Dictionary;
 	import starling.core.Starling;
+	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.textures.RenderTexture;
 	/**
@@ -17,12 +19,15 @@ package quadra.world.lib.systems.starling
 			_renderTargets = new Dictionary();
 		}
 		
-		public function addRenderTarget(name:String, renderTexture:RenderTexture):void
+		public function addRenderTarget(name:String, renderTexture:RenderTexture, applyCameraToInput:Boolean = false, applyCameraToOutput:Boolean = false):Image
 		{
 			if (_renderTargets[name] == null && renderTexture != null)
 			{
-				_renderTargets[name] = new RenderTarget(name, renderTexture);
+				_renderTargets[name] = new RenderTarget(name, renderTexture, applyCameraToInput, applyCameraToOutput);
+				return _renderTargets[name].outputImage;
 			}
+			
+			return null;
 		}
 		
 		public function removeRenderTarget(name:String, dispose:Boolean):void
@@ -40,6 +45,11 @@ package quadra.world.lib.systems.starling
 		public function getRenderTargetTexture(name:String):RenderTexture
 		{
 			return _renderTargets[name].renderTexture;
+		}
+		
+		public function getRenderTargetOutput(name:String):Image
+		{
+			return _renderTargets[name].outputImage;
 		}
 		
 		public function getRenderTargetRoot(name:String):Sprite
@@ -62,11 +72,20 @@ package quadra.world.lib.systems.starling
 			return _renderTargets[name] != null;
 		}
 		
-		public function render():void
+		public function render(camera:Camera):void
 		{
 			for each(var renderTarget:RenderTarget in _renderTargets)
 			{
-				renderTarget.renderTexture.draw(renderTarget.root);
+				var transform:Matrix = null;
+				if (!renderTarget.applyCameraToInput)
+				{
+					transform = camera.transform;
+				}
+				renderTarget.renderTexture.draw(renderTarget.root, transform);
+				if (renderTarget.applyCameraToOutput)
+				{
+					renderTarget.outputImage.transformationMatrix = camera.inverseTransform;
+				}
 			}
 		}
 	}
